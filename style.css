@@ -1,0 +1,45 @@
+.title{
+    height: 200px;
+    background-color: purple;
+}
+
+.game{
+    display: flex;
+    margin-top: 10px;
+    padding: 2em;
+    height: auto;
+    background-color: purple;
+    align-content: center;
+    justify-content: center;
+}
+
+
+.tablero{
+    background-color: white;
+    height: 600px;
+    width: 600px;
+    display: grid;
+    grid-template: repeat(8, 1fr) / repeat(8, 1fr);
+    gap: 2px;
+}
+
+.casilla{
+    background-color: green;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 20px;
+}
+
+.mina{
+    background-color: red;
+}
+
+.oculta{
+    background-color:  blue;
+    user-select: none;
+    color: transparent;
+}
+
+.marcada{
+    background-color: yellow;
+}
