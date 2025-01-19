@@ -3,9 +3,31 @@ var cantidadBanderas = 8;
 var casillasFaltantes = 56;
 var tamTablero;
 
+{//audios
+    var music = new Audio("./sounds/music.mp3");
+    music.volume=0.5;
+    music.loop = true;
+
+    var explotion = new Audio("./sounds/explotion.mp3");
+    explotion.volume=0.7;
+
+    var ponerBandera = new Audio("./sounds/ponerBandera.mp3");
+    var quitarBandera = new Audio("./sounds/quitarBandera.mp3");
+
+    var click = new Audio("./sounds/click.mp3");
+}
+
+{//tiempo
+    var tiempo = 0;
+    window.setInterval(function () {
+        $(".tiempo").text(tiempo);
+        tiempo++;
+    },1000)
+}
+
 
 $(document).ready(function () {
-    generarTablero(8, 8)
+    generarTablero(8, 8);
 });
 //Mandan a cargar el tablero
 $(".nivel").on("change", function () {
@@ -101,7 +123,7 @@ function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
 
 
 
-
+//$(".casilla").fitText(0.38);
 
 $(document).on("click", ".oculta", function () {        // Evento de clic izquierdo, para descubrir casilla
 
@@ -110,12 +132,10 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
         $(this).removeClass("oculta");
 
         if ($(this).hasClass("mina")) {
-
-            $(".mina").removeClass("oculta");
             perder();
-
         } else {
-            $(this).addClass("visible");
+
+            click.play()
 
             if ($(this).text() == "") {
                 clikcAlRededor(this)
@@ -126,6 +146,7 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
             if (casillasFaltantes == 0) {
                 ganar();
             }
+
         }
 
     }
@@ -144,10 +165,12 @@ $(document).on("contextmenu", ".oculta", function (event) {//Evento de clic dere
     event.preventDefault();
 
     if ($(this).hasClass("marcada")) {
+        quitarBandera.play()
         $(this).removeClass("marcada");
         cantidadBanderas++;
     } else {
         if (cantidadBanderas > 0) {
+            ponerBandera.play()
             $(this).addClass("marcada");
             cantidadBanderas--;
         }
@@ -211,17 +234,25 @@ function revisarMinas(tamTablero, x, y) {                 // Devuelve el número
 }
 
 function perder() {
+
+    $(".mina").removeClass("oculta");
+
+    explotion.play();
+    music.pause();
+    music.currentTime = 0;
+
     setTimeout(() => {
         alert("Perdiste")
         $(".nivel").change()
+        music.play()
     }, 500);
 }
 
-function ganar() {    
+function ganar() {
     setTimeout(() => {
-    alert("Ganaste!!")
-    $(".nivel").change()
-}, 500);
+        alert("Ganaste!!")
+        $(".nivel").change()
+    }, 500);
 
 }
 
@@ -274,3 +305,6 @@ function clikcAlRededor(esto) {
         modificadorX++;
     }
 }
+
+
+music.play()
