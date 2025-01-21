@@ -1,7 +1,7 @@
 var mapaMinas = [];             // Contiene el mapa de las minas existentes
 var cantidadBanderas = 8;
 var casillasFaltantes = 56;
-var tamTablero;
+var tamTablero=8;
 
 {//audios
     var music = new Audio("./sounds/music.mp3");
@@ -92,17 +92,6 @@ function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
     for (let i = 0; i < tamTablero; i++) { // Genera cada casilla del tablero.
         for (let j = 0; j < tamTablero; j++) {
 
-            let minasAlRededor = revisarMinas(tamTablero, i, j);  //Revisar minas al rededor
-
-            let clase = "";
-            if (mapaMinas[i][j] == 1) {                         //Revisa si es mina, para agregar dicha clase
-                clase = " mina"
-            }
-
-            if (minasAlRededor == 0 || clase == " mina") {      //Cambia el número a vacío en las casillas necesarias
-                minasAlRededor = ""
-            }
-
             let parOImpar;
             if (esPar) {
                 parOImpar = " par ";
@@ -113,7 +102,7 @@ function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
             }
 
 
-            $(".tablero").append(`<div id="c-${i}-${j}" data-row="${i}" data-column="${j}" class="casilla oculta${clase}${parOImpar}">${minasAlRededor}</div>`);    //Agrega cada casilla al tablero
+            $(".tablero").append(`<div id="c-${i}-${j}" data-row="${i}" data-column="${j}" class="casilla oculta${parOImpar}"></div>`);    //Agrega cada casilla al tablero
         }
         esPar = !esPar;
     }
@@ -122,23 +111,28 @@ function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
 }
 
 
-
-//$(".casilla").fitText(0.38);
-
 $(document).on("click", ".oculta", function () {        // Evento de clic izquierdo, para descubrir casilla
+
+
+    let x = Number($(this).attr("data-row"));
+    let y = Number($(this).attr("data-column"));
 
     if (!$(this).hasClass("marcada")) {
 
         $(this).removeClass("oculta");
 
-        if ($(this).hasClass("mina")) {
+        if (mapaMinas[x][y] == 1) {
             perder();
         } else {
 
-            click.play()
+            click.play()//Reproduce sonido de descubrir mina
 
-            if ($(this).text() == "") {
+            let minasAlRededor = revisarMinas(tamTablero, x, y);
+
+            if (minasAlRededor == 0) {
                 clikcAlRededor(this)
+            } else{
+                $(this).css("background-image", `url("./images/i${minasAlRededor}.png")`);
             }
 
             casillasFaltantes--;
@@ -233,13 +227,30 @@ function revisarMinas(tamTablero, x, y) {                 // Devuelve el número
     return minas;
 }
 
-function perder() {
 
-    $(".mina").removeClass("oculta");
+
+
+
+
+function perder() {
 
     explotion.play();
     music.pause();
     music.currentTime = 0;
+
+    
+    for (let i = 0; i < tamTablero; i++) {
+        for (let j = 0; j < tamTablero; j++) {
+
+            if (mapaMinas[i][j]==1) {
+                console.log(i,j);
+                $(`#c-${i}-${j}`).addClass("mina");
+                $(`#c-${i}-${j}`).removeClass("oculta");
+            }
+        
+        };
+    }
+
 
     setTimeout(() => {
         alert("Perdiste")
@@ -247,6 +258,11 @@ function perder() {
         music.play()
     }, 500);
 }
+
+
+
+
+
 
 function ganar() {
     setTimeout(() => {

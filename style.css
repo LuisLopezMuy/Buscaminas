@@ -7,7 +7,7 @@ body{
     display: grid;
     grid-template: repeat(8, 1fr) / repeat(8, 1fr);
     aspect-ratio: 1;
-    border: 0.5em solid rgb(124, 76, 255);
+    border: 0.4em solid rgb(9, 183, 47);
 
 }
 
@@ -17,12 +17,12 @@ body{
     align-items: center;
     justify-content: center;
     font-size: 15px;
+    background-size: cover;
 }
 
 
 .mina{
     background-image: url("./images/mina.png");
-    background-size: cover;
     background-color: transparent;
 }
 
@@ -44,14 +44,11 @@ body{
 
 .oculta{
     background-image: none;
-    user-select: none;
     color: transparent;
 }
 
-
 .marcada{    
     background-image: url("./images/bandera.png");
-    background-size: cover;
     background-color: transparent;
 }
 
@@ -91,6 +88,15 @@ option, .nivel{
     .title{
         font-size: 30px;
     }
+
+    .tablero{
+        border: 0.3em solid rgb(9, 183, 47);
+    }
+
+    .nivel{
+        margin-top: 12px;
+    }
+
   }
 
 
@@ -98,4 +104,9 @@ option, .nivel{
     .title{
         font-size: 25px;
     }
+
+    .tablero{
+        border: 0.2em solid rgb(9, 183, 47);
+    }
+
   }
