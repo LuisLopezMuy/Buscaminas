@@ -142,7 +142,7 @@ option,
     margin-bottom: 45px;
 }
 
-.resultText {
+.resultInfo {
     display: flex;
     justify-content: center;
 }
@@ -192,7 +192,39 @@ input {
 }
 
 
+.botonConfig{
+    margin-right: 0px;
+    margin-left: 20px;
+}
 
+
+.resultText{
+    text-align: center;
+    font-size: 30px;
+    margin-top: 20px;
+}
+
+.footerIcon{
+    width: 25px;
+}
+
+img.footerIcon{
+    margin-right: 15px;
+}
+
+.granContainer{
+    display: flex;
+    flex-direction: column;
+    min-height: 97vh;
+}
+
+.flexMain{
+    flex: 1;
+}
+
+.flexFooter{
+    padding-top: 50px;
+}
 
 
 @media (max-width: 575px) {
@@ -210,12 +242,14 @@ input {
         margin-bottom: 20px;
     }
 
-
     .selects {
         padding-left: 10px;
         width: inherit;
     }
 
+    .resultText{
+        font-size: 25px;
+    }
 }
 
 
@@ -233,8 +267,3 @@ input {
 
 }
 
-
-.botonConfig{
-    margin-right: 0px;
-    margin-left: 20px;
-}

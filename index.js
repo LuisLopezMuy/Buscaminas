@@ -4,6 +4,7 @@ var cantidadBanderas;
 var casillasFaltantes;
 var tamTablero = 8;
 var reloj;
+var tiempo=0;
 var primerClick;
 const myModal = new bootstrap.Modal("#myModal");
 
@@ -93,10 +94,10 @@ function mandarAGenerar(){//Manda a generar el tablero
 
     {//tiempo
         $(".tiempo").text("0");
-        var tiempo = 1;
+        tiempo = 0;
         reloj = setInterval(function () {
-            $(".tiempo").text(tiempo);
             tiempo++;
+            $(".tiempo").text(tiempo);
         }, 1000)
     }
 
@@ -363,41 +364,38 @@ function perder() {
         };
     }
 
-    clearInterval(reloj);
-
-    music.pause();
-    music.currentTime = 0;
-
-
-    setTimeout(() => {
-        
-    myModal.show();
-    }, 800);
+    resultModal("HAS PERDIDO :(","perder")
 
 }
-
-
-
 
 
 
 function ganar() {
+    resultModal("¡¡HAS GANADO!!","ganar")
+}
+
+
+function resultModal(texto,sonido){
 
     clearInterval(reloj);
 
     music.pause();
     music.currentTime = 0;
 
-
+    $(".resultText").text(texto);
+    $(".resultTime").text(tiempo);
+    $(".resultCasillas").text((tamTablero**2-cantidadMinas-casillasFaltantes)+" / "+(tamTablero**2-cantidadMinas));
+    $(".result").show();
+    $(".botonJugar").text("Jugar de Nuevo");
+    
     setTimeout(() => {
-        
     myModal.show();
+    
+    var audioResultado = new Audio(`./sounds/${sonido}.mp3`);
+    audioResultado.play()
+
     }, 800);
-
 }
-
-
-
 
 
 $(".botonReiniciar").on("click", function () {
@@ -410,6 +408,9 @@ $(".botonConfig").on("click", function () {
 
     music.pause();
     music.currentTime = 0;
+
+    $(".result").hide();
+    $(".botonJugar").text("Jugar");
 
     myModal.show();
 });
