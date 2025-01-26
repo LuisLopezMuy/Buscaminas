@@ -1,15 +1,23 @@
 var mapaMinas = [];             // Contiene el mapa de las minas existentes
-var cantidadBanderas = 8;
-var casillasFaltantes = 56;
-var tamTablero=8;
+var cantidadMinas = 8;
+var cantidadBanderas;
+var casillasFaltantes;
+var tamTablero = 8;
+var reloj;
+var primerClick;
+const myModal = new bootstrap.Modal("#myModal");
+
+$(".result").hide();
+$(".nivelPer").hide();
+myModal.show();
 
 {//audios
     var music = new Audio("./sounds/music.mp3");
-    music.volume=0.5;
+    music.volume = 0.5;
     music.loop = true;
 
     var explotion = new Audio("./sounds/explotion.mp3");
-    explotion.volume=0.7;
+    explotion.volume = 0.7;
 
     var ponerBandera = new Audio("./sounds/ponerBandera.mp3");
     var quitarBandera = new Audio("./sounds/quitarBandera.mp3");
@@ -17,45 +25,105 @@ var tamTablero=8;
     var click = new Audio("./sounds/click.mp3");
 }
 
-{//tiempo
-    var tiempo = 0;
-    window.setInterval(function () {
-        $(".tiempo").text(tiempo);
-        tiempo++;
-    },1000)
-}
 
-
-$(document).ready(function () {
-    generarTablero(8, 8);
-});
-//Mandan a cargar el tablero
-$(".nivel").on("change", function () {
-    var nivel = Number($(".nivel").val());
-    var cantidadMinas;
+$(".nivel").on("change", function () {//Cambia los parámetros para el tablero
+    let nivel = Number($(this).val());
 
     switch (nivel) {
         case 1:
+            $(".nivelPer").hide();
+            $(".botonJugar").removeAttr("disabled");
             tamTablero = 8;
             cantidadMinas = 8;
             break;
         case 2:
+            $(".nivelPer").hide();
+            $(".botonJugar").removeAttr("disabled");
             tamTablero = 12;
-            cantidadMinas = 25;
+            cantidadMinas = 21;
             break;
-        default:
+        case 3:
+            $(".nivelPer").hide();
+            $(".botonJugar").removeAttr("disabled");
             tamTablero = 16;
             cantidadMinas = 40
             break;
+        default:
+            $(".nivelPer").show();
+            tamTablero = 0;
+            cantidadMinas = 0;
+            $(".botonJugar").attr("disabled", "true");
+            break;
     }
 
+    $(".mostrarCasillas").text(tamTablero ** 2 - cantidadMinas);
+    $(".mostrarMinas").text(cantidadMinas);
+});
+
+
+$(".nivelPer").on("change", function () {//Cambia los parámetros para el tablero
+    let nivel = Number($(this).val());
+
+    if (nivel < 3 || nivel > 20) {
+
+        tamTablero = 0;
+        cantidadMinas = 0;
+        $(".botonJugar").attr("disabled", "true");
+
+    } else {
+
+        tamTablero = nivel;
+        cantidadMinas = Math.floor(nivel ** 2 / 6)
+
+        $(".mostrarCasillas").text(tamTablero ** 2 - cantidadMinas);
+        $(".mostrarMinas").text(cantidadMinas);
+
+        $(".botonJugar").removeAttr("disabled");
+
+    }
+});
+
+
+function mandarAGenerar(){//Manda a generar el tablero
     generarTablero(tamTablero, cantidadMinas);
     cantidadBanderas = cantidadMinas;
     $(".cantidadBanderas").text(cantidadBanderas);
     casillasFaltantes = (tamTablero ** 2 - cantidadMinas);
     $(".casillasFaltantes").text(casillasFaltantes);
+
+    {//tiempo
+        $(".tiempo").text("0");
+        var tiempo = 1;
+        reloj = setInterval(function () {
+            $(".tiempo").text(tiempo);
+            tiempo++;
+        }, 1000)
+    }
+
+    music.play()
+
+    primerClick = true;
+}
+
+
+$(".botonJugar").on("click", function () {
+    mandarAGenerar();
 });
 
+
+function generarMinas(cantidadDeMinas){
+    for (let i = 0; i < cantidadDeMinas; i++) { // Genera las minas en el mapa
+
+        let x = Math.floor(Math.random() * tamTablero);
+        let y = Math.floor(Math.random() * tamTablero);
+
+        if (mapaMinas[x][y] == 0) {
+            mapaMinas[x][y] = 1;
+        } else {
+            i--;
+        }
+    }
+}
 
 function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
 
@@ -69,19 +137,7 @@ function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
         mapaMinas.push(filaTemporal)
     }
 
-    for (let i = 0; i < cantidadMinas; i++) { // Genera las minas en el mapa
-
-        let x = Math.floor(Math.random() * tamTablero);
-        let y = Math.floor(Math.random() * tamTablero);
-
-        if (mapaMinas[x][y] == 0) {
-            mapaMinas[x][y] = 1;
-        } else {
-            i--;
-        }
-        ;
-
-    }
+    generarMinas(cantidadMinas);
 
 
     $(".tablero").html("");
@@ -104,7 +160,10 @@ function generarTablero(tamTablero, cantidadMinas) {    // Genera el tablero
 
             $(".tablero").append(`<div id="c-${i}-${j}" data-row="${i}" data-column="${j}" class="casilla oculta${parOImpar}"></div>`);    //Agrega cada casilla al tablero
         }
-        esPar = !esPar;
+
+        if (tamTablero % 2 == 0) {
+            esPar = !esPar;
+        }
     }
 
 
@@ -119,6 +178,15 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
 
     if (!$(this).hasClass("marcada")) {
 
+        if (primerClick) {
+            while (mapaMinas[x][y]==1) {
+                mapaMinas[x][y]=0;
+                generarMinas(1)
+            };
+            primerClick=false;
+        }
+
+
         $(this).removeClass("oculta");
 
         if (mapaMinas[x][y] == 1) {
@@ -131,7 +199,7 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
 
             if (minasAlRededor == 0) {
                 clikcAlRededor(this)
-            } else{
+            } else {
                 $(this).css("background-image", `url("./images/i${minasAlRededor}.png")`);
             }
 
@@ -151,13 +219,11 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
 
 
 $(document).on("contextmenu", ".casilla", function (event) {
-    event.preventDefault();
+    event.preventDefault();// Evitar que se muestre el menú contextual por defecto
 });
 
-$(document).on("contextmenu", ".oculta", function (event) {//Evento de clic derecho, para marcar con banderita
-    // Evitar que se muestre el menú contextual por defecto
-    event.preventDefault();
 
+$(document).on("contextmenu", ".oculta", function (event) {//Evento de clic derecho, para marcar con banderita
     if ($(this).hasClass("marcada")) {
         quitarBandera.play()
         $(this).removeClass("marcada");
@@ -229,51 +295,7 @@ function revisarMinas(tamTablero, x, y) {                 // Devuelve el número
 
 
 
-
-
-
-function perder() {
-
-    explotion.play();
-    music.pause();
-    music.currentTime = 0;
-
-    
-    for (let i = 0; i < tamTablero; i++) {
-        for (let j = 0; j < tamTablero; j++) {
-
-            if (mapaMinas[i][j]==1) {
-                console.log(i,j);
-                $(`#c-${i}-${j}`).addClass("mina");
-                $(`#c-${i}-${j}`).removeClass("oculta");
-            }
-        
-        };
-    }
-
-
-    setTimeout(() => {
-        alert("Perdiste")
-        $(".nivel").change()
-        music.play()
-    }, 500);
-}
-
-
-
-
-
-
-function ganar() {
-    setTimeout(() => {
-        alert("Ganaste!!")
-        $(".nivel").change()
-    }, 500);
-
-}
-
-
-function clikcAlRededor(esto) {
+function clikcAlRededor(esto) { //Clickea todas las casillas al rededor, en caso de ser 0 la que clickeo el usuario.
 
     let x = Number($(esto).attr("data-row"));
     let y = Number($(esto).attr("data-column"));
@@ -323,4 +345,71 @@ function clikcAlRededor(esto) {
 }
 
 
-music.play()
+
+
+function perder() {
+
+    explotion.play();
+
+    for (let i = 0; i < tamTablero; i++) {//Para mostrar todas las minas que hay
+        for (let j = 0; j < tamTablero; j++) {
+
+            if (mapaMinas[i][j] == 1) {
+                console.log(i, j);
+                $(`#c-${i}-${j}`).addClass("mina");
+                $(`#c-${i}-${j}`).removeClass("oculta");
+            }
+
+        };
+    }
+
+    clearInterval(reloj);
+
+    music.pause();
+    music.currentTime = 0;
+
+
+    setTimeout(() => {
+        
+    myModal.show();
+    }, 800);
+
+}
+
+
+
+
+
+
+function ganar() {
+
+    clearInterval(reloj);
+
+    music.pause();
+    music.currentTime = 0;
+
+
+    setTimeout(() => {
+        
+    myModal.show();
+    }, 800);
+
+}
+
+
+
+
+
+$(".botonReiniciar").on("click", function () {
+    clearInterval(reloj);
+    mandarAGenerar();
+});
+
+$(".botonConfig").on("click", function () {
+    clearInterval(reloj);
+
+    music.pause();
+    music.currentTime = 0;
+
+    myModal.show();
+});

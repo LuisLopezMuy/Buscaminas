@@ -1,8 +1,8 @@
-body{
+body {
     background-color: rgb(218, 224, 255);
 }
 
-.tablero{
+.tablero {
     background-color: rgb(0, 244, 53);
     display: grid;
     grid-template: repeat(8, 1fr) / repeat(8, 1fr);
@@ -11,7 +11,7 @@ body{
 
 }
 
-.casilla{
+.casilla {
     border-radius: 4%;
     display: flex;
     align-items: center;
@@ -21,92 +21,220 @@ body{
 }
 
 
-.mina{
+.mina {
     background-image: url("./images/mina.png");
     background-color: transparent;
 }
 
-.par{
+.par {
     background-color: rgb(245, 216, 181);
 }
 
-.impar{
+.impar {
     background-color: bisque;
 }
 
-.par.oculta{
+.par.oculta {
     background-color: rgb(7, 200, 62);
 }
 
-.impar.oculta{
-    background-color: #00f435
+.impar.oculta {
+    background-color: rgb(0, 244, 53)
 }
 
-.oculta{
+.oculta {
     background-image: none;
     color: transparent;
 }
 
-.marcada{    
+.marcada {
     background-image: url("./images/bandera.png");
     background-color: transparent;
 }
 
 
-p{
+p {
     font-family: acme;
     font-size: 2rem;
     display: flex;
     align-items: center;
+    justify-content: right;
 }
 
-.title{
+.title {
     margin-left: 15px;
     font-family: "Press start 2p";
     font-size: 35px;
     color: black;
 }
 
-.myNavbar{
-    background-color: rgb(55, 0, 255);
+.myNavbar {
+    background-color: #3700ff;
     padding: 9px;
 }
 
-option, .nivel{
+option,
+.nivel {
     font-family: acme;
     font-size: x-large;
     background-color: rgb(184, 185, 234);
 }
 
-.icon{
+.icon {
     width: 50px;
     margin-right: 20px;
 }
 
+.stats {
+    display: flex;
+    flex-direction: row;
+}
 
-@media (max-width: 450px) {
-    .title{
+.statsText {
+    width: 60px;
+    padding-top: 0px;
+}
+
+.statsText p {
+    margin-bottom: 19px;
+}
+
+
+
+
+
+.navbar-brand {
+    margin: 0;
+}
+
+.modal-content {
+    background-color: rgb(59, 192, 54);
+
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+    border: none;
+}
+
+.modal-header {
+    background-color: rgb(1, 159, 33);
+}
+
+.botonJugar {
+    font-family: acme;
+    font-size: x-large;
+}
+
+
+
+
+.modalFlex {
+    display: flex;
+    flex-direction: column;
+}
+
+.result {
+
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 45px;
+}
+
+.resultText {
+    display: flex;
+    justify-content: center;
+}
+
+.resultStats {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.resultStats>div {
+    margin: 15px;
+}
+
+.configurables {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    width: 120px;
+    background-color: rgb(184, 185, 234);
+    border-radius: 5% / 12%;
+    font-family: acme;
+    border: 1px solid rgb(234, 234, 234);
+}
+
+.labels {
+    display: flex;
+    justify-content: left;
+}
+
+.mostrables{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.options{
+    margin-top: 15px;
+}
+
+
+
+.prueba{
+    background-color: wheat;
+}
+
+
+
+
+
+@media (max-width: 575px) {
+    .title {
         font-size: 30px;
     }
 
-    .tablero{
+    .tablero {
         border: 0.3em solid rgb(9, 183, 47);
     }
 
-    .nivel{
-        margin-top: 12px;
+    .configurables {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 20px;
     }
 
-  }
+
+    .selects {
+        padding-left: 10px;
+        width: inherit;
+    }
+
+}
 
 
-  @media (max-width: 380px) {
-    .title{
+
+
+
+@media (max-width: 380px) {
+    .title {
         font-size: 25px;
     }
 
-    .tablero{
+    .tablero {
         border: 0.2em solid rgb(9, 183, 47);
     }
 
-  }
+}
+
+
+.botonConfig{
+    margin-right: 0px;
+    margin-left: 20px;
+}
