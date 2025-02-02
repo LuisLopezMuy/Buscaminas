@@ -117,7 +117,7 @@ option,
     background-color: rgb(1, 159, 33);
 }
 
-.botonJugar {
+.botonJugar, .botonReiniciar {
     font-family: acme;
     font-size: x-large;
 }
