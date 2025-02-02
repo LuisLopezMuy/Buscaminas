@@ -23,7 +23,7 @@ body {
 
 .mina {
     background-image: url("./images/mina.png");
-    background-color: transparent;
+    background-color: rgb(0, 244, 53) !important
 }
 
 .par {
@@ -42,14 +42,9 @@ body {
     background-color: rgb(0, 244, 53)
 }
 
-.oculta {
-    background-image: none;
-    color: transparent;
-}
-
 .marcada {
     background-image: url("./images/bandera.png");
-    background-color: transparent;
+    background-color:rgb(0, 244, 53) !important
 }
 
 
@@ -69,7 +64,7 @@ p {
 }
 
 .myNavbar {
-    background-color: #3700ff;
+    background-color: rgb(55, 0, 255);
     padding: 9px;
 }
 
@@ -225,6 +220,47 @@ img.footerIcon{
 .flexFooter{
     padding-top: 50px;
 }
+
+
+
+.confeti{
+    width: 70px;
+    opacity: 65%;
+    position: fixed;
+}
+
+canvas{
+    position: fixed;
+    top: 0px;
+    z-index: -1;
+}
+
+
+
+@keyframes caer {
+    from{
+        top: -60px;
+    }
+
+    to{
+        top: 101%;
+    }
+}
+
+@keyframes girar {
+    from{
+        rotate: 0deg;
+    }
+
+    50%{
+        rotate: 180deg;
+    }
+    
+    to{
+        rotate: 360deg;
+    }
+}
+
 
 
 @media (max-width: 575px) {

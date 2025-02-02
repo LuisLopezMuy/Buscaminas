@@ -4,7 +4,7 @@ var cantidadBanderas;
 var casillasFaltantes;
 var tamTablero = 8;
 var reloj;
-var tiempo=0;
+var tiempo = 0;
 var primerClick;
 const myModal = new bootstrap.Modal("#myModal");
 
@@ -85,7 +85,7 @@ $(".nivelPer").on("change", function () {//Cambia los parámetros para el tabler
 });
 
 
-function mandarAGenerar(){//Manda a generar el tablero
+function mandarAGenerar() {//Manda a generar el tablero
     generarTablero(tamTablero, cantidadMinas);
     cantidadBanderas = cantidadMinas;
     $(".cantidadBanderas").text(cantidadBanderas);
@@ -108,11 +108,14 @@ function mandarAGenerar(){//Manda a generar el tablero
 
 
 $(".botonJugar").on("click", function () {
+    cancelAnimationFrame(animacionID);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    $("canvas").css("z-index", "-1");
     mandarAGenerar();
 });
 
 
-function generarMinas(cantidadDeMinas){
+function generarMinas(cantidadDeMinas) {
     for (let i = 0; i < cantidadDeMinas; i++) { // Genera las minas en el mapa
 
         let x = Math.floor(Math.random() * tamTablero);
@@ -180,11 +183,11 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
     if (!$(this).hasClass("marcada")) {
 
         if (primerClick) {
-            while (mapaMinas[x][y]==1) {
-                mapaMinas[x][y]=0;
+            while (mapaMinas[x][y] == 1) {
+                mapaMinas[x][y] = 0;
                 generarMinas(1)
             };
-            primerClick=false;
+            primerClick = false;
         }
 
 
@@ -199,7 +202,11 @@ $(document).on("click", ".oculta", function () {        // Evento de clic izquie
             let minasAlRededor = revisarMinas(tamTablero, x, y);
 
             if (minasAlRededor == 0) {
-                clikcAlRededor(this)
+
+                setTimeout(() => {
+                    clikcAlRededor(this)
+                }, 160);
+
             } else {
                 $(this).css("background-image", `url("./images/i${minasAlRededor}.png")`);
             }
@@ -352,6 +359,9 @@ function perder() {
 
     explotion.play();
 
+    animacion("mina")
+    $("canvas").css("z-index", "0");
+
     for (let i = 0; i < tamTablero; i++) {//Para mostrar todas las minas que hay
         for (let j = 0; j < tamTablero; j++) {
 
@@ -364,18 +374,20 @@ function perder() {
         };
     }
 
-    resultModal("HAS PERDIDO :(","perder")
+    resultModal("HAS PERDIDO :(", "perder")
 
 }
 
 
 
 function ganar() {
-    resultModal("¡¡HAS GANADO!!","ganar")
+    animacion("bandera")
+    $("canvas").css("z-index", "0");
+    resultModal("¡¡HAS GANADO!!", "ganar")
 }
 
 
-function resultModal(texto,sonido){
+function resultModal(texto, sonido) {
 
     clearInterval(reloj);
 
@@ -384,15 +396,15 @@ function resultModal(texto,sonido){
 
     $(".resultText").text(texto);
     $(".resultTime").text(tiempo);
-    $(".resultCasillas").text((tamTablero**2-cantidadMinas-casillasFaltantes)+" / "+(tamTablero**2-cantidadMinas));
+    $(".resultCasillas").text((tamTablero ** 2 - cantidadMinas - casillasFaltantes) + " / " + (tamTablero ** 2 - cantidadMinas));
     $(".result").show();
     $(".botonJugar").text("Jugar de Nuevo");
-    
+
     setTimeout(() => {
-    myModal.show();
-    
-    var audioResultado = new Audio(`./sounds/${sonido}.mp3`);
-    audioResultado.play()
+        myModal.show();
+
+        var audioResultado = new Audio(`./sounds/${sonido}.mp3`);
+        audioResultado.play()
 
     }, 800);
 }
@@ -413,4 +425,127 @@ $(".botonConfig").on("click", function () {
     $(".botonJugar").text("Jugar");
 
     myModal.show();
+});
+
+$(".botonVolumen").on("click", function () {
+
+    if ($(this).hasClass("on")) {
+        music.volume = 0;
+        $(this).attr("src", "./images/volumenOff.png");
+        $(this).removeClass("on");
+
+    } else {
+        music.volume = 0.5;
+        $(this).attr("src", "./images/volumenOn.png");
+        $(this).addClass("on");
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var canvas = document.getElementById("miCanvas");
+var ctx = canvas.getContext("2d");
+
+// Ajustar tamaño del canvas al tamaño de la ventana
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Cargar la imagen de la mina
+var imagenMina = new Image();
+var animacionID;
+
+
+
+
+// Clase Mina para lluvia de minas
+class Mina {
+    constructor() {
+        this.x = Math.random() * canvas.width;  // Posición aleatoria en X
+        this.y = Math.random() * -canvas.height;  // Posición aleatoria arriba de la pantalla
+        this.velocidad = 2 + Math.random() * 3; // Velocidad de caída (entre 2 y 5)
+        this.rotacion = Math.random() * Math.PI * 2; // Rotación inicial aleatoria
+        this.velocidadRotacion = (Math.random() - 0.5) * 0.1; // Velocidad de rotación aleatoria
+        this.tamano = 30 + Math.random() * 50; // Tamaño aleatorio entre 30 y 80 px
+    }
+
+    // Actualizar posición y rotación
+    actualizar() {
+        this.y += this.velocidad; // Mueve la mina hacia abajo
+        this.rotacion += this.velocidadRotacion; // Rota la mina
+
+        // Si la mina sale de la pantalla, la reiniciamos arriba
+        if (this.y > canvas.height) {
+            this.y = -this.tamano;
+            this.x = Math.random() * canvas.width;
+            this.velocidad = 2 + Math.random() * 3;
+            this.tamano = 30 + Math.random() * 50;
+        }
+    }
+
+    // Dibujar la mina en el canvas
+    dibujar() {
+        ctx.save(); // Guardamos el estado del contexto
+        ctx.translate(this.x + this.tamano / 2, this.y + this.tamano / 2); // Movemos el origen
+        ctx.rotate(this.rotacion); // Aplicamos la rotación
+        ctx.drawImage(imagenMina, -this.tamano / 2, -this.tamano / 2, this.tamano, this.tamano); // Dibujamos la imagen
+        ctx.restore(); // Restauramos el contexto
+    }
+}
+
+
+
+
+
+
+// Crear un array con 15 minas
+var minasLluvia = [];
+for (let i = 0; i < 25; i++) {
+    minasLluvia.push(new Mina());
+}
+
+
+function animacion(imagenP) {
+    imagenMina.src = `./images/${imagenP}.png`;
+    animar()
+}
+
+
+
+
+// Función de animación
+function animar() {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+
+    // Actualizar y dibujar cada mina
+    minasLluvia.forEach(mina => {
+        mina.actualizar();
+        mina.dibujar();
+    });
+
+    animacionID = requestAnimationFrame(animar); // Llamar a la siguiente animación
+}
+
+
+
+
+
+
+
+// Ajustar tamaño del canvas cuando cambia la ventana
+window.addEventListener("resize", function () {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 });
